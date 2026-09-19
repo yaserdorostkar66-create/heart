@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOU ❤️</title>
+
+<style>
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+}
+
+canvas {
+    display: block;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas" width="900" height="700"></canvas>
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const t = canvas.getContext("2d");
+
+t.fillStyle = "red";
+t.textAlign = "center";
+t.textBaseline = "middle";
+
+const scale = 15;
+const layers = 8;
+const delay = 40;
+
+
+// شکل قلب — همان کد اصلی
+function heart(angle, offset_x = 0, offset_y = 0) {
+
+    const x = 16 * Math.sin(angle) ** 3;
+
+    const y =
+        13 * Math.cos(angle)
+        - 5 * Math.cos(2 * angle)
+        - 2 * Math.cos(3 * angle)
+        - Math.cos(4 * angle);
+
+    return {
+        x: x * scale / 2 + offset_x,
+        y: y * scale / 2 + offset_y
+    };
+}
+
+
+// هر لایه جداگانه ساخته می‌شود
+let layer = 0;
+let i = 0;
+
+function draw() {
+
+    if (layer >= layers) {
+        return;
+    }
+
+    const offset_x = layer * 1.2;
+    const offset_y = layer * 0.8;
+
+    const step = 5;
+
+    const angle = i * Math.PI / 180;
+
+    const p = heart(
+        angle,
+        offset_x,
+        offset_y
+    );
+
+    // معادل مختصات Turtle
+    const x = 450 + p.x;
+    const y = 350 - p.y;
+
+    // فقط یک YOU در هر مرحله
+    t.font = "bold 8px Arial";
+
+    t.fillText(
+        "YOU",
+        x,
+        y
+    );
+
+    i += step;
+
+    if (i > 360) {
+        i = 0;
+        layer++;
+    }
+
+    setTimeout(draw, delay);
+}
+
+draw();
+
+</script>
+
+</body>
+</html>
