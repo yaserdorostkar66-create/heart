@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOU ❤️</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+}
+
+canvas {
+    display: block;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const BASE_WIDTH = 900;
+const BASE_HEIGHT = 700;
+
+let scaleFactor = 1;
+
+function resize() {
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+    scaleFactor = Math.min(
+        window.innerWidth / BASE_WIDTH,
+        window.innerHeight / BASE_HEIGHT
+    );
+}
+
+resize();
+window.addEventListener("resize", resize);
+
+const scale = 15;
+const layers = 8;
+const step = 5;
+const delay = 40;
+
+const totalRounds = 10;
+
+let currentRound = 0;
+let currentLayer = 0;
+let i = 0;
+
+
+// همان فرمول قلب اصلی
+function heart(angle, offsetX = 0, offsetY = 0) {
+
+    const x =
+        16 * Math.sin(angle) ** 3;
+
+    const y =
+        13 * Math.cos(angle)
+        - 5 * Math.cos(2 * angle)
+        - 2 * Math.cos(3 * angle)
+        - Math.cos(4 * angle);
+
+    return {
+        x: x * scale / 2 + offsetX,
+        y: y * scale / 2 + offsetY
+    };
+}
+
+
+function drawNext() {
+
+    // ۱۰ دور کامل شده
+    if (currentRound >= totalRounds) {
+
+        setTimeout(showLove, 500);
+
+        return;
+    }
+
+
+    const offsetX =
+        currentLayer * 1.2;
+
+    const offsetY =
+        currentLayer * 0.8;
+
+
+    const angle =
+        i * Math.PI / 180;
+
+
+    const p =
+        heart(
+            angle,
+            offsetX,
+            offsetY
+        );
+
+
+    // همان مرکز 900x700 کد Turtle
+    const centerX =
+        window.innerWidth / 2;
+
+    const centerY =
+        window.innerHeight / 2;
+
+
+    const x =
+        centerX +
+        p.x * scaleFactor;
+
+
+    const y =
+        centerY -
+        p.y * scaleFactor;
+
+
+    ctx.fillStyle = "red";
+
+    ctx.font =
+        `bold ${8 * scaleFactor}px Arial`;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+
+    // فقط یک YOU در هر مرحله
+    ctx.fillText(
+        "YOU",
+        x,
+        y
+    );
+
+
+    i += step;
+
+
+    // یک لایه کامل شد
+    if (i > 360) {
+
+        i = 0;
+
+        currentLayer++;
+
+
+        // تمام ۸ لایه کامل شد
+        if (currentLayer >= layers) {
+
+            currentLayer = 0;
+
+            currentRound++;
+        }
+    }
+
+
+    setTimeout(
+        drawNext,
+        delay
+    );
+}
+
+
+// متن پایانی
+function showLove() {
+
+    const centerX =
+        window.innerWidth / 2;
+
+    const centerY =
+        window.innerHeight / 2;
+
+
+    ctx.fillStyle = "red";
+
+    ctx.font =
+        `bold ${Math.min(
+            window.innerWidth * 0.08,
+            42
+        )}px Arial`;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+
+    ctx.fillText(
+        "دوستت دارم ❤️",
+        centerX,
+        centerY + (180 * scaleFactor)
+    );
+}
+
+
+drawNext();
+
+</script>
+
+</body>
+</html>
