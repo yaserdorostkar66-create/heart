@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOU ❤️</title>
+
+<style>
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: black;
+    }
+
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+</head>
+
+<body>
+
+<canvas id="heart"></canvas>
+
+<script>
+const canvas = document.getElementById("heart");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+resize();
+window.addEventListener("resize", resize);
+
+let angle = 0;
+const step = 5;
+const scale = Math.min(window.innerWidth, window.innerHeight) / 55;
+
+function heart(a) {
+    const x = 16 * Math.sin(a) ** 3;
+
+    const y =
+        13 * Math.cos(a)
+        - 5 * Math.cos(2 * a)
+        - 2 * Math.cos(3 * a)
+        - Math.cos(4 * a);
+
+    return {
+        x: x * scale / 2,
+        y: -y * scale / 2
+    };
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    ctx.font = "bold 10px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "red";
+
+    // از یک YOU شروع می‌شود و دانه‌دانه تا آخر قلب ساخته می‌شود
+    for (let a = 0; a <= angle; a += step * Math.PI / 180) {
+
+        const p = heart(a);
+
+        ctx.fillText(
+            "YOU",
+            cx + p.x,
+            cy + p.y
+        );
+    }
+
+    angle += 0.045;
+
+    if (angle > Math.PI * 2) {
+        angle = Math.PI * 2;
+    }
+
+    requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
+</html>
