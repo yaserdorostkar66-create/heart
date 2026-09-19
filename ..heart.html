@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOU ❤️</title>
+
+<style>
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+}
+
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let W, H, scale;
+
+function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    scale = Math.min(W / 900, H / 700) * 15;
+}
+
+resize();
+window.addEventListener("resize", resize);
+
+const layers = 8;
+const step = 5;
+const totalRounds = 10;
+
+let layer = 0;
+let i = 0;
+let round = 1;
+
+function heart(angle, offsetX, offsetY) {
+    const x = 16 * Math.sin(angle) ** 3;
+
+    const y =
+        13 * Math.cos(angle)
+        - 5 * Math.cos(2 * angle)
+        - 2 * Math.cos(3 * angle)
+        - Math.cos(4 * angle);
+
+    return {
+        x: x * scale / 2 + offsetX,
+        y: y * scale / 2 + offsetY
+    };
+}
+
+function draw() {
+
+    if (round > totalRounds) {
+        showMessage();
+        return;
+    }
+
+    const offsetX = layer * 1.2;
+    const offsetY = layer * 0.8;
+
+    const angle = i * Math.PI / 180;
+
+    const p = heart(angle, offsetX, offsetY);
+
+    const x = W / 2 + p.x;
+    const y = H / 2 - p.y - 30;
+
+    ctx.fillStyle = "#ff1744";
+
+    const fontSize = Math.max(8, scale * 0.53);
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText("YOU", x, y);
+
+    i += step;
+
+    if (i > 360) {
+        i = 0;
+        layer++;
+
+        if (layer >= layers) {
+            layer = 0;
+            round++;
+        }
+    }
+
+    setTimeout(draw, 35);
+}
+
+function showMessage() {
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const fontSize = Math.min(W * 0.08, 42);
+
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillStyle = "#ff1744";
+
+    ctx.fillText(
+        "دوستت دارم ❤️",
+        W / 2,
+        H / 2 + scale * 15
+    );
+}
+
+draw();
+</script>
+
+</body>
+</html>
