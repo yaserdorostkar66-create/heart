@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOU ❤️</title>
+
+<style>
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: black;
+    }
+
+    canvas {
+        display: block;
+    }
+</style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = 900;
+canvas.height = 700;
+
+ctx.fillStyle = "red";
+ctx.font = "bold 8px Arial";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+const scale = 15;
+const layers = 8;
+const step = 5;
+
+let layer = 0;
+let i = 0;
+
+function heart(angle, offsetX, offsetY) {
+
+    const x = 16 * Math.sin(angle) ** 3;
+
+    const y =
+        13 * Math.cos(angle)
+        - 5 * Math.cos(2 * angle)
+        - 2 * Math.cos(3 * angle)
+        - Math.cos(4 * angle);
+
+    return {
+        x: x * scale / 2 + offsetX,
+        y: y * scale / 2 + offsetY
+    };
+}
+
+function draw() {
+
+    if (layer >= layers) return;
+
+    const offsetX = layer * 1.2;
+    const offsetY = layer * 0.8;
+
+    const angle = i * Math.PI / 180;
+
+    const p = heart(angle, offsetX, offsetY);
+
+    /*
+       انتقال به مرکز صفحه
+       چون Turtle مختصات مرکز را مبدأ می‌گرفت.
+    */
+    const screenX = canvas.width / 2 + p.x;
+    const screenY = canvas.height / 2 - p.y;
+
+    ctx.fillText("YOU", screenX, screenY);
+
+    i += step;
+
+    if (i > 360) {
+        i = 0;
+        layer++;
+    }
+
+    setTimeout(draw, 40);
+}
+
+draw();
+</script>
+
+</body>
+</html>
